@@ -1,0 +1,40 @@
+{% extends 'estore/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="container">
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row px-4 px-lg-5 py-lg-4 align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="h2 text-uppercase mb-0">Invoice</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="container mb-5 alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <h4 class="h4 text-uppercase">Invoice Details</h4>
+        <br />
+        <p class="ml-5 medium"><strong>Invoice Id:</strong> {{invoice.id}}</p>
+        <p class="ml-5 medium"><strong>Order Id:</strong> {{invoice.order_id}}</p>
+        <p class="ml-5 medium"><strong>Customer's Email Address:</strong> {{invoice.primary_recipient.email_address}}</p>
+        {% widthratio invoice.payment_requests.0.computed_amount_money.amount 100 1 as payment %}
+        <p class="ml-5 medium"><strong>Payment Request:</strong> ${{payment|intcomma}}.00</p>
+        <p class="ml-5 medium"><strong>Payment URL:</strong> <a href="{{invoice.public_url}}">{{invoice.public_url}}</a></p>
+        <p class="ml-5 medium"><strong>Status:</strong> {{ invoice.status}}</p>
+    </section>
+</div>
+{% endblock content %}

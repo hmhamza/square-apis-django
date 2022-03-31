@@ -1,0 +1,90 @@
+{% extends 'estore/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="container">
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row px-4 px-lg-5 py-lg-4 align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="h2 text-uppercase mb-0">Order</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="container mb-5 alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        
+        
+        <h4 class="h4 text-uppercase">Order Details</h4>
+        <br />
+        <p class="ml-5 medium"><strong>Order Id:</strong> {{order.id}}</p>
+        {% widthratio order.total_money.amount 100 1 as amount %}
+        <p class="ml-5 medium"><strong>Total Amount:</strong> ${{ amount|intcomma }}.00</p>
+        <p class="ml-5 medium"><strong>Created At:</strong> {{ order.created_at}}</p>
+
+        <br /><br />
+        <h4 class="h4 text-uppercase">Items Details</h4>
+        <br />
+
+        <div class="row">
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <div class="table-responsive mb-4">
+                    <table class="table">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-0" scope="col"> <strong
+                                        class="text-small text-uppercase">Name</strong></th>
+                                <th class="border-0" scope="col"> <strong
+                                        class="text-small text-uppercase">Price</strong></th>
+                                <th class="border-0" scope="col"> <strong
+                                        class="text-small text-uppercase">Quantity</strong></th>
+                                <th class="border-0" scope="col"> <strong
+                                        class="text-small text-uppercase">Total</strong></th>
+                                <th class="border-0" scope="col"> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for item in order.line_items %}
+                            <tr>
+                                <td class="align-middle border-0">
+                                    <p class="mb-0 small">{{item.name}}</p>
+                                </td>
+                                <td class="align-middle border-0">
+                                    {% widthratio item.base_price_money.amount 100 1 as price %}
+                                    <p class="mb-0 small">${{price|intcomma}}.00</p>
+                                </td>
+                                <td class="align-middle border-0">
+                                    <p class="mb-0 small">{{item.quantity}}</p>
+                                </td>
+                                <td class="align-middle border-0">
+                                    {% widthratio item.total_money.amount 100 1 as total %}
+                                    <p class="mb-0 small">${{total|intcomma}}.00</p>
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-light px-4 py-3 text-center">
+                    <a class="btn btn-outline-dark btn-lg" href="{% url 'estore:invoice' order.id %}"></i> Generate Invoice</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock content %}
